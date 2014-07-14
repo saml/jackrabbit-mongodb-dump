@@ -20,7 +20,7 @@ package object jcr {
     lazy val repo = JcrUtils.getRepository(url)
     lazy val rawSession = repo.login(new SimpleCredentials(username, password.toCharArray))
     lazy val repoWorkspace = rawSession.getWorkspace
-    lazy val queryManager = repoWorkspace.
+    lazy val queryManager = repoWorkspace.getQueryManager
 
     def xpath(statement: String, limit: Long = 0, offset: Long = 0): Iterator[Node] = {
       val query = queryManager.createQuery(statement, Query.XPATH)
