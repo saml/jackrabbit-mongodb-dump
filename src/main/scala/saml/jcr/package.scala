@@ -1,7 +1,7 @@
 package saml
 
 import javax.jcr.query.Query
-import javax.jcr.{SimpleCredentials, Node, RangeIterator, Session}
+import javax.jcr.{Node, RangeIterator, SimpleCredentials}
 
 import org.apache.jackrabbit.commons.JcrUtils
 
@@ -9,7 +9,7 @@ import org.apache.jackrabbit.commons.JcrUtils
  * author: saml
  */
 package object jcr {
-  def iteratorFromRangeIterator[A <: RangeIterator, B](iter: A): Iterator[B] = new Iterator[B] {
+  implicit def iteratorFromRangeIterator[A <: RangeIterator, B](iter: A): Iterator[B] = new Iterator[B] {
     def hasNext(): Boolean = iter.hasNext
     def next(): B = iter.next().asInstanceOf[B]
   }
@@ -25,7 +25,7 @@ package object jcr {
     def xpath(statement: String, limit: Long = 0, offset: Long = 0): Iterator[Node] = {
       val query = queryManager.createQuery(statement, Query.XPATH)
       modifyQuery(query, limit, offset)
-      iteratorFromRangeIterator(query.execute().getNodes)
+      query.execute().getNodes
     }
   }
 
