@@ -1,3 +1,5 @@
+copy of https://github.com/upperbounds/jcrhelpers
+
 ```
 $ sbt
 > console
