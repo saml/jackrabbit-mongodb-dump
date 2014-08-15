@@ -22,6 +22,12 @@ package object mongo {
   def asDoc(node: Node): MongoDBObject = {
     val properties: Iterator[Property] = node.getProperties
     val keyVals: List[(String, Any)] = properties.map(prop => (prop.getName, rawFromProperty(prop))).toList
-    MongoDBObject(keyVals) += ("_children" -> node.getNodes.map(asDoc).toList, "_name" -> node.getName)
+
+    val name = ("_name" -> node.getName)
+    val doc = MongoDBObject(keyVals)
+
+    val children = node.getNodes.map(asDoc).toList
+    if (children.isEmpty) doc += name
+    else doc += (name, "_children" -> children)
   }
 }
