@@ -18,3 +18,17 @@ $ sbt
 > c.xpath("/jcr:root/content//element(*,cq:Page)").foreach(x => println(x.getPath))
 > saml.jcr.allNodes(c.nodeAt("/content/foo/bar")).foreach( x => println(x.getPath))
 ```
+
+# Using Sling
+
+`DavEx` is really slow. So use sling instead.
+
+Assumming sling is at localhost:4502,
+
+```
+curl -u admin:admin -F"sling:resourceType=saml/mongodump"  http://localhost:4502/apps/saml/mongodump
+curl -u admin:admin -T sling/saml/mongodump/html.jsp http://localhost:4502/apps/saml/mongodump/html.jsp
+curl -u admin:admin -T sling/saml/mongodump/POST.jsp http://localhost:4502/apps/saml/mongodump/POST.jsp
+curl -u admin:admin -F "path=/content/nymag/daily" http://localhost:4502/apps/saml/mongodump.html > out.json
+mongoimport -d cq_dump -c pages --file out.json
+```
