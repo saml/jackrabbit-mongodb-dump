@@ -54,8 +54,9 @@ object JackrabbitMongodbDump {
     val collection = Mongo(mongoUri).client(dbName)(collectionName)
     val cqConnection = Connection(cqUrl, username = cqUsername, password = cqPassword)
     val path = "/content/nymag/daily"
-    println(s"Dumping ${cqHost}${path} to ${mongoUri} ${dbName}.${collectionName}")
-    JackrabbitMongodbDump(cqConnection, collection).start(path, """/\d\d\d\d/\d\d/[^/]+/jcr:content$""".r)
+    val onlyArticles = """/\d\d\d\d/\d\d/(?:(?!\d\d/)[^/]+)/jcr:content$""".r
+    println(s"Dumping ${cqHost}${path} (matching ${onlyArticles}) to ${mongoUri} ${dbName}.${collectionName}")
+    JackrabbitMongodbDump(cqConnection, collection).start(path, onlyArticles)
   }
 
 }
