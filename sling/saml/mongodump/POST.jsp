@@ -1,4 +1,6 @@
 <%@page contentType="application/json; charset=UTF-8" trimDirectiveWhitespaces="true" %>
+<%@page import="org.apache.jackrabbit.util.ISO8601"%>
+<%@page import="java.util.Calendar"%>
 <%@page import="org.apache.sling.commons.json.JSONException"%>
 <%@page import="org.apache.sling.commons.json.JSONArray"%>
 <%@page import="org.apache.sling.commons.json.JSONObject"%>
@@ -11,7 +13,7 @@
 <%@page import="java.util.regex.Matcher"%>
 <%@include file="/libs/foundation/global.jsp"%>
 <%!
-private static Object rawValue(Value value) throws RepositoryException {
+private static Object jsonValue(Value value) throws RepositoryException {
     final int type = value.getType();
     if (PropertyType.BOOLEAN == type) {
         return value.getBoolean();
@@ -30,7 +32,14 @@ private static Object rawValue(Value value) throws RepositoryException {
     }
 
     if (PropertyType.DATE == type) {
-        return value.getDate().getTime();
+        final Calendar cal = value.getDate();
+        try {
+            final JSONObject doc = new JSONObject();
+            doc.put("$date", cal.getTimeInMillis());
+            return doc;
+        } catch (JSONException e) {
+            return ISO8601.format(cal);
+        }
     }
 
     if (PropertyType.STRING == type) {
@@ -40,7 +49,7 @@ private static Object rawValue(Value value) throws RepositoryException {
     return value.getString();
 }
 
-private static Object rawValue(Property prop) throws RepositoryException {
+private static Object jsonValue(Property prop) throws RepositoryException {
     if (prop.isMultiple()) {
         final Value[] values = prop.getValues();
         if (values == null) {
@@ -49,7 +58,7 @@ private static Object rawValue(Property prop) throws RepositoryException {
 
         final List<Object> result = new ArrayList<Object>(values.length);
         for (final Value value : values) {
-            result.add(rawValue(value));
+            result.add(jsonValue(value));
         }
 
         return result;
@@ -59,7 +68,7 @@ private static Object rawValue(Property prop) throws RepositoryException {
     if (value == null) {
         return null;
     }
-    return rawValue(value);
+    return jsonValue(value);
 }
 
 
@@ -98,7 +107,7 @@ private static JSONObject nodeToJson(Node node) throws RepositoryException, JSON
     final PropertyIterator props = node.getProperties();
     while (props.hasNext()) {
         final Property prop = props.nextProperty();
-        doc.put(prop.getName(), rawValue(prop));
+        doc.put(prop.getName(), jsonValue(prop));
     }
 
     final NodeIterator children = node.getNodes();
