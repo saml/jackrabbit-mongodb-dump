@@ -5,7 +5,8 @@ import javax.jcr.Property
 
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala._
-import saml.jcr._
+import saml.jcr.rawFromProperty
+import saml.jcr.iteratorFromRangeIterator
 
 /**
  * author: saml
