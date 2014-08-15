@@ -47,6 +47,15 @@ case class JackrabbitMongodbDump(jackrabbit: Connection, collection: MongoCollec
 }
 
 object JackrabbitMongodbDump {
-  def dump(jackrabbit: Connection, mongodb: Mongo) = 1
+  def dumpNymag(cqHost: String = "localhost:4502", cqUsername: String = "author", cqPassword: String = "author",
+           mongoUri: String = "mongodb://localhost/",
+           dbName: String = "cq_dump", collectionName: String = "pages") = {
+    val cqUrl = s"http://${cqHost}/crx/server"
+    val collection = Mongo(mongoUri).client(dbName)(collectionName)
+    val cqConnection = Connection(cqUrl, username = cqUsername, password = cqPassword)
+    val path = "/content/nymag/daily"
+    println(s"Dumping ${cqHost}${path} to ${mongoUri} ${dbName}.${collectionName}")
+    JackrabbitMongodbDump(cqConnection, collection).start(path, """/\d\d\d\d/\d\d/[^/]+/jcr:content$""".r)
+  }
 
 }

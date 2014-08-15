@@ -6,7 +6,7 @@ Connects to JCR at `localhost:4502` and MongoDB at `localhost` by default.
 $ sbt
 > console
 > val d = saml.JackrabbitMongodbDump(saml.jcr.Connection(), saml.mongo.Mongo().client("jackrabbit_dump")("pages"))
-> d.start("/content/nymag/daily", """/\d+/\d+/[^/]+/jcr:content$""".r)
+> d.start("/content/nymag/daily", """/\d\d\d\d/\d\d/[^/]+/jcr:content$""".r)
 ```
 
 # Other Examples
