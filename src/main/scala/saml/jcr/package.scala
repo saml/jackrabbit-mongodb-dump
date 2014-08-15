@@ -22,11 +22,17 @@ package object jcr {
     lazy val repoWorkspace = rawSession.getWorkspace
     lazy val queryManager = repoWorkspace.getQueryManager
 
+    implicit def nodeAt(path: String): Node = rawSession.getNode(path)
+
     def xpath(statement: String, limit: Long = 0, offset: Long = 0): Iterator[Node] = {
       val query = queryManager.createQuery(statement, Query.XPATH)
       modifyQuery(query, limit, offset)
       query.execute().getNodes
     }
+
+    def all(node: Node): Iterator[Node] =
+      Iterator.single(node) ++ node.getNodes().flatMap(all)
+
   }
 
   private def modifyQuery(query: Query, limit: Long, offset: Long) = {
