@@ -1,9 +1,10 @@
 package saml
 
+import javax.jcr._
 import javax.jcr.query.Query
-import javax.jcr.{Node, RangeIterator, SimpleCredentials}
 
 import org.apache.jackrabbit.commons.JcrUtils
+import org.joda.time.DateTime
 
 /**
  * author: saml
@@ -16,6 +17,24 @@ package object jcr {
 
   def allNodes(node: Node): Iterator[Node] =
     Iterator.single(node) ++ node.getNodes().flatMap(allNodes)
+
+  def rawFromProperty(prop: Property) = {
+    if (prop.isMultiple) prop.getValues.map(rawFromValue)
+    else rawFromValue(prop.getValue)
+  }
+
+  def rawFromValue(value: Value) = {
+    value.getType match {
+      case PropertyType.BOOLEAN => value.getBoolean
+      case PropertyType.LONG => value.getLong
+      case PropertyType.DOUBLE => value.getDouble
+      case PropertyType.DECIMAL => value.getDecimal
+      case PropertyType.DATE => new DateTime(value.getDate)
+      case PropertyType.STRING => value.getString
+      case PropertyType.BINARY => value.getString //heheheh maybe base64 encode
+      case otherwise => value.getString
+    }
+  }
 
   case class Connection(url: String = "http://localhost:4502/crx/server", workspace: String = "crx.default",
                         username: String = "admin", password: String = "admin") {
