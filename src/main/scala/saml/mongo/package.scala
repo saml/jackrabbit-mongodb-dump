@@ -16,9 +16,10 @@ package object mongo {
     lazy val client = MongoClient(MongoClientURI(uri))
   }
 
+  //this recurses into node. do not apply it on large node tree.
   def asDoc(node: Node): MongoDBObject = {
     val properties: Iterator[Property] = node.getProperties
     val keyVals: List[(String, Any)] = properties.map(prop => (prop.getName, rawFromProperty(prop))).toList
-    MongoDBObject(keyVals)
+    MongoDBObject(keyVals) += ("_children" -> node.getNodes.map(asDoc).toList, "_name" -> node.getName)
   }
 }
