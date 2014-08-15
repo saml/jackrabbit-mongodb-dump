@@ -14,6 +14,9 @@ package object jcr {
     def next(): B = iter.next().asInstanceOf[B]
   }
 
+  def allNodes(node: Node): Iterator[Node] =
+    Iterator.single(node) ++ node.getNodes().flatMap(allNodes)
+
   case class Connection(url: String = "http://localhost:4502/crx/server", workspace: String = "crx.default",
                         username: String = "admin", password: String = "admin") {
 
@@ -29,9 +32,6 @@ package object jcr {
       modifyQuery(query, limit, offset)
       query.execute().getNodes
     }
-
-    def all(node: Node): Iterator[Node] =
-      Iterator.single(node) ++ node.getNodes().flatMap(all)
 
   }
 

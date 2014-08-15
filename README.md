@@ -7,5 +7,5 @@ $ sbt
 > val c = Connection()
 > val nodes = c.xpath("/jcr:root/content//element(*,cq:Page)")
 > nodes.foreach { x => println(x.getPath) }
-> c.all(c.nodeAt("/content/foo/bar")).foreach( x => println(x.getPath) )
+> allNodes(c.nodeAt("/content/foo/bar")).foreach( x => println(x.getPath) )
 ```
