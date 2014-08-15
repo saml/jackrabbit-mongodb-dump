@@ -1,6 +1,7 @@
 package saml
 
-import javax.jcr.{Node, Property}
+import javax.jcr.Node
+import javax.jcr.Property
 
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala._
@@ -12,7 +13,7 @@ import saml.jcr._
 package object mongo {
   RegisterJodaTimeConversionHelpers()
 
-  case class Mongo(uri: String) {
+  case class Mongo(uri: String = "mongodb://localhost/") {
     lazy val client = MongoClient(MongoClientURI(uri))
   }
 

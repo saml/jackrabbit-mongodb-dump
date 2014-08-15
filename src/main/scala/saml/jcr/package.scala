@@ -1,6 +1,11 @@
 package saml
 
-import javax.jcr._
+import javax.jcr.Node
+import javax.jcr.Property
+import javax.jcr.PropertyType
+import javax.jcr.RangeIterator
+import javax.jcr.SimpleCredentials
+import javax.jcr.Value
 import javax.jcr.query.Query
 
 import org.apache.jackrabbit.commons.JcrUtils
