@@ -4,3 +4,5 @@ tmp/
 .idea/
 .idea_modules/
 .vlt
+*.json
+data/
