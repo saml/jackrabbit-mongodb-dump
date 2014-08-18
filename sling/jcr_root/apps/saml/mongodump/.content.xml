@@ -4,4 +4,5 @@
     sling:resourceType="saml/mongodump">
     <html.jsp/>
     <POST.jsp/>
+    <sql.POST.jsp/>
 </jcr:root>
