@@ -4,11 +4,7 @@
 <%@page import="org.apache.sling.commons.json.JSONException"%>
 <%@page import="org.apache.sling.commons.json.JSONArray"%>
 <%@page import="org.apache.sling.commons.json.JSONObject"%>
-<%@page import="java.util.Iterator"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.List"%>
 <%@page import="java.io.IOException"%>
-<%@page import="org.apache.sling.api.resource.ResourceResolver"%>
 <%@page import="java.util.regex.Pattern"%>
 <%@page import="java.util.regex.Matcher"%>
 <%@include file="/libs/foundation/global.jsp"%>
@@ -56,12 +52,12 @@ private static Object jsonValue(Property prop) throws RepositoryException {
             return null;
         }
 
-        final List<Object> result = new ArrayList<Object>(values.length);
+        final JSONArray arr = new JSONArray();
         for (final Value value : values) {
-            result.add(jsonValue(value));
+            arr.put(jsonValue(value));
         }
-
-        return result;
+        
+        return arr;
     }
 
     final Value value = prop.getValue();
@@ -87,14 +83,14 @@ private static class AllNodesMatching {
     }
 
     public void walk(Node node) throws RepositoryException {
-        if (pattern == null || pattern.matcher(node.getPath()).find()) {
+        if (pattern.matcher(node.getPath()).find()) {
             visitor.visit(node);
-        }
-
-        final NodeIterator children = node.getNodes();
-        while (children.hasNext()) {
-            final Node child = children.nextNode();
-            walk(child);
+        } else {
+            final NodeIterator children = node.getNodes();
+            while (children.hasNext()) {
+                final Node child = children.nextNode();
+                walk(child);
+            }
         }
     }
 }
