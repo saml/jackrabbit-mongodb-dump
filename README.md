@@ -21,7 +21,7 @@ $ sbt
 
 # Using Sling
 
-`DavEx` is really slow. So use [sling](http://sling.apache.org/) instead.
+`DavEx` is really slow. So use [sling](http://sling.apache.org/) instead. Sling scripts are located under [sling/jcr_root](sling/jcr_root).
 
 Assumming sling is at localhost:4502,
 
