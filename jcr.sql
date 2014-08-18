@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS nodes (
   root_id INTEGER,        -- root node.
   ord INTEGER,            -- child nodes are ordered.
   FOREIGN KEY(parent_id) REFERENCES nodes(rowid),
-  FOREIGN KEY(root_id) REFERENCES nodes(rowid),
+  FOREIGN KEY(root_id) REFERENCES nodes(rowid)
 );
 
 -- a property has a name and a value, or multiple values (of same type).

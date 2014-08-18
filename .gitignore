@@ -6,5 +6,5 @@ tmp/
 .vlt
 *.json
 data/
-*.db
-
+*.db*
+*.pyc
