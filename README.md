@@ -29,8 +29,8 @@ Assumming sling is at localhost:4502,
 curl -u admin:admin -F"sling:resourceType=saml/mongodump"  http://localhost:4502/apps/saml/mongodump
 curl -u admin:admin -T sling/jcr_root/apps/saml/mongodump/html.jsp http://localhost:4502/apps/saml/mongodump/html.jsp
 curl -u admin:admin -T sling/jcr_root/apps/saml/mongodump/POST.jsp http://localhost:4502/apps/saml/mongodump/POST.jsp
-curl -u admin:admin -F "path=/content/nymag/daily" http://localhost:4502/apps/saml/mongodump.html > out.json
-mongoimport -d cq_dump -c pages --file out.json
+curl -u admin:admin -F "path=/content" -F "out=/tmp/cq_dump.json" http://localhost:4502/apps/saml/mongodump.html
+mongoimport -d cq_dump -c pages --file /tmp/cq_dump.json
 ```
 
 
