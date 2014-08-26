@@ -5,6 +5,10 @@
 <%@page import="org.apache.sling.commons.json.JSONArray"%>
 <%@page import="org.apache.sling.commons.json.JSONObject"%>
 <%@page import="java.io.IOException"%>
+<%@page import="java.io.BufferedWriter"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.FileWriter"%>
+<%@page import="java.io.Writer"%>
 <%@page import="java.util.regex.Pattern"%>
 <%@page import="java.util.regex.Matcher"%>
 <%@include file="/libs/foundation/global.jsp"%>
@@ -120,9 +124,13 @@ private static JSONObject nodeToJson(Node node) throws RepositoryException, JSON
 }
 
 private static class NodeToJsonOutput extends NodeVisitor {
-    private final JspWriter out;
-    public NodeToJsonOutput(JspWriter out) {
+    private final Writer out;
+    private final JspWriter respOut;
+    private long count;
+    public NodeToJsonOutput(Writer out, JspWriter respOut) {
         this.out = out;
+        this.respOut = respOut;
+        this.count = 0;
     }
 
     @Override
@@ -132,6 +140,11 @@ private static class NodeToJsonOutput extends NodeVisitor {
             doc.put("_path", node.getPath());
             out.write(doc.toString());
             out.write("\n");
+            count++;
+            if (count % 10000 == 0) {
+                respOut.write(String.format("dumpped: %d articles\n", count));
+                respOut.flush();
+            }
         } catch (JSONException e) {
 
         } catch (IOException e) {
@@ -154,8 +167,19 @@ if (pattern == null) {
 
 final Pattern regex = Pattern.compile(pattern);
 
+final String outputPath = slingRequest.getParameter("out");
+if (outputPath == null) {
+    throw new ServletException("need parameter: out | full path to dump file");
+}
+final File outputFile = new File(outputPath);
+final Writer writer = new BufferedWriter(new FileWriter(outputFile)); 
+
+final long t = System.currentTimeMillis();
 final Node node = resourceResolver.getResource(rootPath).adaptTo(Node.class);
-final NodeToJsonOutput worker = new NodeToJsonOutput(out);
+final NodeToJsonOutput worker = new NodeToJsonOutput(writer, out);
 final AllNodesMatching traverser = new AllNodesMatching(regex, worker);
 traverser.walk(node);
+
+writer.close();
+out.write(String.format("Took: %d secs.\n", (System.currentTimeMillis() - t)/1000));
 %>
